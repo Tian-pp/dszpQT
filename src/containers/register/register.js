@@ -1,8 +1,13 @@
 import React, {Component} from 'react';
 import {NavBar,WingBlank,List,WhiteSpace,Button,InputItem,Radio} from 'antd-mobile'
+import {connect} from 'react-redux'
+import {Redirect} from 'react-router-dom'
+
 
 import logo from '../img/logo.jpg'
 import '../logo/logo.less'
+import {register} from '../../redux/actions'
+
 class Register extends Component {
   state = {
     username :'',
@@ -16,7 +21,8 @@ class Register extends Component {
     })
   }
   register=()=>{
-    console.log(this.state);
+   // console.log(this.state);
+    this.props.register(this.state);
   }
   
   goLogin=()=>{
@@ -26,6 +32,10 @@ class Register extends Component {
   
   render () {
     const {type} = this.state;
+    const {msg,redirectTo} = this.props.user;
+    if(redirectTo){
+     return <Redirect to={redirectTo} />
+    }
     return (
      <div>
        <NavBar type='primary'>用户注册</NavBar>
@@ -34,6 +44,7 @@ class Register extends Component {
        </div>
        <List>
          <WingBlank>
+           <p className='errorMsg'>{msg}</p>
            <WhiteSpace />
            <InputItem placeholder='请输入用户名' onChange={val=>{this.hanlder('username',val)}}>用户名：</InputItem>
            <WhiteSpace/>
@@ -43,8 +54,8 @@ class Register extends Component {
            <WhiteSpace/>
            <List.Item>
              <span>用户类型</span>&nbsp;&nbsp;
-             <Radio checked={type==='dashen'} onChange={(name,val)=>{this.hanlder('type','dashen')}}>大神</Radio>&nbsp;&nbsp;&nbsp;
-             <Radio checked={type==='laoban'} onChange={(name,val)=>{this.hanlder('type','laoban')}}>老板</Radio>
+             <Radio checked={type==='dashen'} onChange={(val)=>{this.hanlder('type','dashen')}}>大神</Radio>&nbsp;&nbsp;&nbsp;
+             <Radio checked={type==='laoban'} onChange={(val)=>{this.hanlder('type','laoban')}}>老板</Radio>
            </List.Item>
            <WhiteSpace/>
            <Button type='primary' onClick={this.register}>注&nbsp;&nbsp;册</Button>
@@ -57,4 +68,7 @@ class Register extends Component {
   }
 }
 
-export default Register;
+export default connect(
+  state=>({user:state.user}),
+  {register}
+)(Register);

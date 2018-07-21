@@ -1,0 +1,19 @@
+
+import axios from 'axios';
+export default function ajax(url,data={},type="GET") {
+
+  if(type==="GET"){
+    
+    let dataStr ='';
+    Object.keys(data).forEach(value => {
+      dataStr += value + "=" + data[value] + "&";
+    })
+    if(dataStr){
+      dataStr = dataStr.substring(0,dataStr.length-1);
+      url = url + '?' + dataStr
+    }
+    return axios.get(url)
+  }else {
+    return axios.post(url,data)
+  }
+}
